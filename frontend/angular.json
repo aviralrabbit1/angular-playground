@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "frontend": {
+    "vex": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -12,82 +12,117 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "vex",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "browser": "src/main.ts",
+            "outputPath": "dist/vex",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/_redirects",
+              "src/README.md",
+              "src/CHANGELOG.md",
+              "src/.htaccess",
               {
-                "glob": "**/*",
-                "input": "public"
+                "glob": "**/*.svg",
+                "input": "node_modules/@material-design-icons/svg",
+                "output": "assets/img/icons/material-design-icons/"
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/@vex/styles/tailwind.scss"
             ],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "simplebar",
+              "highlight.js",
+              "faker",
+              "showdown",
+              "core-js",
+              "dom-set",
+              "dom-plane",
+              "angular-calendar/date-adapters/date-fns",
+              "calendar-utils/date-adapters/date-fns",
+              "@mattlewis92/dom-autoscroller",
+              "apexcharts",
+              "can-use-dom",
+              "lodash.debounce",
+              "lodash.memoize",
+              "lodash.throttle",
+              "luxon",
+              "quill"
+            ],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "3mb",
+                  "maximumError": "5mb"
                 }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
+              ]
             }
-          },
-          "defaultConfiguration": "production"
+          }
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "vex:build"
+          },
           "configurations": {
             "production": {
-              "buildTarget": "frontend:build:production"
-            },
-            "development": {
-              "buildTarget": "frontend:build:development"
+              "browserTarget": "vex:build:production"
             }
-          },
-          "defaultConfiguration": "development"
+          }
         },
         "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "vex:build"
+          }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
+            "karmaConfig": "karma.conf.js",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"
-            ]
+            ],
+            "scripts": []
           }
         }
       }
